@@ -1,3 +1,6 @@
+# Add ignore
+*.DS_Store
+
 # Logs
 logs
 *.log
