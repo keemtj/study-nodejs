@@ -1,5 +1,6 @@
 # Add ignore
 *.DS_Store
+config.json
 
 # Logs
 logs
