@@ -1,4 +1,4 @@
-// 사용자 이름ㅇ르 눌렀을 때 댓글 로딩
+// 사용자 이름을 눌렀을 때 댓글 로딩
 document.querySelectorAll("#user-list tr").forEach((el) => {
   el.addEventListener("click", function () {
     const id = el.querySelector("td").textContent;
@@ -51,7 +51,7 @@ async function getComment(id) {
       const row = document.createElement("tr");
       let td = document.createElement("td");
       td.textContent = comment.id;
-      row.appendChild(id);
+      row.appendChild(td);
       td = document.createElement("td");
       td.textContent = comment.User.name;
       row.appendChild(td);
@@ -68,6 +68,17 @@ async function getComment(id) {
         }
         try {
           await axios.patch(`/comments/${comment.id}`, { comment: newComment });
+          getComment(id);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+      const remove = document.createElement("button");
+      remove.textContent = "삭제";
+      remove.addEventListener("click", async () => {
+        // 삭제 클릭 시
+        try {
+          await axios.delete(`/comments/${comment.id}`);
           getComment(id);
         } catch (err) {
           console.error(err);

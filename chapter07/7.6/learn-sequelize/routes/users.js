@@ -32,7 +32,7 @@ router
 
 router.get("/:id/comments", async (req, res, next) => {
   try {
-    const comments = await comment.findAll({
+    const comments = await Comment.findAll({
       include: {
         model: User,
         where: { id: req.params.id },
@@ -46,28 +46,4 @@ router.get("/:id/comments", async (req, res, next) => {
   }
 });
 
-router
-  .route("/:id")
-  .patch(async (req, res, next) => {
-    try {
-      const result = await Comment.update(
-        {
-          comment: req.body.comment,
-        },
-        { where: { id: req.params.id } }
-      );
-      res.json(result);
-    } catch (err) {
-      console.error(err);
-      next(err);
-    }
-  })
-  .delete(async (req, res, next) => {
-    try {
-      const result = await Comment.destroy({ where: { id: req.params.id } });
-      res.json(result);
-    } catch (err) {
-      console.error(err);
-      next(err);
-    }
-  });
+module.exports = router;
