@@ -28,7 +28,7 @@
 - 설치한 패키지의 버전을 관리하는 파일이 `package.json`이다.
 - **따라서 노드 프로젝트를 시작하기 전에는 폴더 내부에 무조건 package.json부터 만들고 시작해야 한다.**
 
-```shell
+```zsh
 $ npm init
 ```
 
@@ -59,7 +59,7 @@ $ npm init
 
 - scripts 속성에 명령어 여러 개를 등록해두고 사용할 수 있다. 보통 start 명령어에 `node [파일명]`을 저장해두고 npm start로 실행한다. start나 test 같은 스크립트는 run을 붙이지 않아도 실행된다.
 
-```shell
+```zsh
 # Express 설치하기
 $ npm install express
 ```
@@ -106,6 +106,95 @@ $ npm install express
 > - **--save-dev:** -D
 > - **--global:** -g
 
+### 📖 5.3. 패키지 버전 이해하기
+
+- 노드 패키지들의 버전은 항상 세 자리로 이루어져 있다. Sem Ver(Semantic Versioning) 방식의 버전 넘버링을 따르기 때문이다.
+- 버전의 첫 번째 자리는 major 버전이다. 0이면 초기 개발 중이라는 뜻이다. 1부터는 정식 버전을 의미한다. major 버전은 하위 호환이 안 될 정도로 패키지의 내용이 수정되었을 때 올린다.
+- 두 번째 자리는 minor 버전이다. 하위 호환이 되는 기능 업데이트를 할 때 올린다.
+- 세 번째 자리는 patch 버전이다. 새로운 기능이 추가되었다기보다는 기존 기능에 문제가 있어 수정한 것을 내놓았을 때 patch 버전을 올린다.
+- 새 버전을 배포한 후에 그 버전의 내용을 절대 수정하면 안 된다.
+- `^, ~, >, <` 같은 문자가 붙은 버전도 있다. 버전에는 포함되지 않지만 설치하거나 업데이트할 때 어떤 버전을 설치해야 하는지 알리는 방법이다.
+- `express@^1.1.1`는 1.1.1 이상부터 2.0.0 미만 버전까지 설치 혹은 업데이트한다(minor).
+- `express@~1.1.1`는 1.1.1 이상부터 1.2.0 미만 버전까지 설치 혹은 업데이트한다(patch).
+- `npm i express@latest` 또는 `npm i express@x`는 안정된 최신 버전의 패키지를 설치한다.
+- `npm i express@next`는 가장 최근 배포판을 사용할 수 있다. @latest와 다른 점은 안정되지 않은 알파나 베타 버전의 패키지를 설치한다는 것이다. 알파나 베타 버전은 1.1.1-alpha.0나 2.0.0-beta.1처럼 표시한다. 출시 직전의 패키지에는 2.0.0-rc.0처럼 rc(Release Candidate)가 붙는 경우도 있다.
+
 ### 📖 5.4 기타 npm 명령어
 
+- **npm outdated:** 업데이트할 수 있는 패키지가 있는지 확인한다. Current와 Wanted가 다르면 업데이트가 필요한 경우이다.
+- **npm update [패키지명]:** 해당 패키지를 업데이트한다.
+- **npm update:** 가능한 모든 패키지가 Wanted에 적힌 버전으로 업데이트된다.
+- **npm uninstall [패키지명]:** 해당 패키지를 제거한다. node_modules와 package.json에서 사라진다.
+- **npm rm [패키지명]:** 패키지 제거 명령어의 축약표현이다.
+- **npm search [검색어]:** 패키지를 검색한다. package.json의 keywords가 이때 사용된다.
+- **npm info [패키지명]:** 패키지의 세부 정보를 파악하고자 할 때 사용한다.
+- **npm adduser:** npm 로그인을 위한 명령어다. 패키지를 배포할 때 로그인이 필요하다.
+
+```zsh
+$ npm adduser
+Username: [사용자 이름 입력]
+Password: [비밀번호 입력]
+Email: (this IS public) [이메일 입력]
+Logged in as [사용자 이름] on https://registry.npmjs.org
+```
+
+- **npm whoami:** 로그인한 사용자를 확인한다. 로그인된 상태가 아니라면 에러가 발생한다.
+- **npm logout:** npm adduser로 로그인한 계정을 로그아웃 한다.
+- **npm version [버전]:** package.json의 버전을 올린다.
+
+```zsh
+# minor 버전
+$ npm version 5.3.2
+# 또는
+$ npm version minor
+```
+
+- **npm deprecate [패키지명] [버전] [메시지]:** 해당 패키지를 설치할 때 경고 메시지를 띄우게 한다. 자신의 패키지에만 이 명령어를 적용할 수 있다.
+- **npm publish:** 자신이 만든 패키지를 배포한다.
+- **npm unpublish [패키지명] --force:** 자신이 배포한 패키지를 제거한다. 단, 24시간 이내에 배포한 패키지만 제거할 수 있다. 의존성 관계 때문이다.
+- **npm ci:** package.json대신 package-lock.json에 기반하여 패키지를 설치한다. 더 엄격하게 버전을 통제하여 패키지를 설치하고 싶을 때 사용하면 된다.
+
 ### 📖 5.5 패키지 배포하기
+
+패키지 배포를 위해 npm 계정을 생성해야 한다.
+
+1. npm 웹 사이트에서 Sign Up을 눌러 회원가입 진행
+2. 회원가입 confirm 메일 확인
+3. 콘솔에서 npm adduser 명령어를 입력하여 생성한 계정으로 로그인
+
+- package.json의 main 부분의 파일명과 일치해야 한다.
+
+```javascript
+// index.js
+module.exports = () => {
+  return "hello package";
+};
+```
+
+- package.json의 name(패키지명)이 중복될 경우 에러가 발생한다.
+- `npm info [패키지명]` 명령어를 입력하여 패키지에 대한 정보가 나온다면 누군가가 사용중이고, 에러가 발생한다면 사용해도 좋은 이름이다.
+
+```zsh
+# 배포하기
+$ npm publish
+# 배포 확인하기
+$ npm info [나의 패키지명]
+...
+published 51 seconds ago by jay <jay@email.com>
+```
+
+```zsh
+# 24시간 이내에 패키지 삭제하기
+$ npm unpublish [나의 패키지명] --force
+# 삭제 확인하기
+$ npm info [나의 패키지명]
+npm ERR! code E404
+npm ERR! 404 Unpublished by jay on 2020-01-01T01:01.506Z
+...
+```
+
+> **npm 배포 시 주의 사항**
+>
+> - 배포 전에 개인 정보가 코드에 들어있지 않은지 꼭 확인한다. 다른 서비스와 연동하다가 실수로 서비스의 비밀 키를 넣어두는 경우가 많다. 다른 사람들이 그 키를 사용하여 과금을 유발할 수도 있으므로 배포 전에 반드시 확인한다.
+> - 패지키의 이름을 선점하는 행위는 삼가한다.
+> - 기존에 있는 패키지와 비슷한 이름으로 새 패키지를 배포하거나 다른 패키지의 코드를 살짝 수정해서 새로 배포하는 경우 꼭 원작자의 허락을 받는다.
