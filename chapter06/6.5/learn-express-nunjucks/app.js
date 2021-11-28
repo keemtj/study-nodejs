@@ -51,6 +51,7 @@ app.use((err, req, res, next) => {
   res.locals.template = "Nunjucks";
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
+  console.log("look at =>", res.locals);
   res.status(err.status || 500);
   res.render("error");
 });
